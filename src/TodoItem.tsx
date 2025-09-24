@@ -1,12 +1,12 @@
-import { useState } from "react";
-import type { Todo } from "./todo";
+import React, {useState} from "react";
+import type {Todo} from "./todo";
 
 interface Props {
   todo: Todo;
   onDeleteTodo: (id: number) => void;
 }
 
-function TodoItem({ todo, onDeleteTodo }: Props) {
+function TodoItem({todo, onDeleteTodo}: Props) {
   const [idEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(todo.text);
 
@@ -17,9 +17,27 @@ function TodoItem({ todo, onDeleteTodo }: Props) {
     onDeleteTodo(todo.id);
   };
 
-  const handleEditStart = () => {
-    setIsEditing(true);
+  const handleEditStart = () => setIsEditing(true);
+
+  const handleEditCancel = () => {
+    setEditText(todo.text);
+    setIsEditing(false);
   };
+
+  const handleEditSave = () => {
+    if (editText.trim() === '') return;
+
+    console.log("保存する方法テキスト: ", editText);
+    setIsEditing(false);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleEditSave();
+    } else if (e.key === 'Escape') {
+      handleEditCancel();
+    }
+  }
 
   return (
     <div
@@ -29,7 +47,7 @@ function TodoItem({ todo, onDeleteTodo }: Props) {
     >
       <div className="flex-1">
         {idEditing ? (
-          <input 
+          <input
             type="text"
             value={editText}
             onChange={(e) => setEditText(e.target.value)}
@@ -60,4 +78,4 @@ function TodoItem({ todo, onDeleteTodo }: Props) {
   );
 }
 
-export { TodoItem };
+export {TodoItem};
